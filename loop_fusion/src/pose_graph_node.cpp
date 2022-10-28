@@ -32,6 +32,7 @@
 #include "pose_graph.h"
 #include "utility/CameraPoseVisualization.h"
 #include "parameters.h"
+#define MAX_BUFF_SIZE 30
 #define SKIP_FIRST_CNT 10
 using namespace std;
 
@@ -101,6 +102,7 @@ void image_callback(const sensor_msgs::ImageConstPtr &image_msg)
 {
     //ROS_INFO("image_callback!");
     m_buf.lock();
+    while(image_buf.size()>=MAX_BUFF_SIZE) image_buf.pop();
     image_buf.push(image_msg);
     m_buf.unlock();
     //printf(" image time %f \n", image_msg->header.stamp.toSec());
@@ -120,6 +122,7 @@ void point_callback(const sensor_msgs::PointCloudConstPtr &point_msg)
 {
     //ROS_INFO("point_callback!");
     m_buf.lock();
+    while(point_buf.size()>=MAX_BUFF_SIZE) point_buf.pop();
     point_buf.push(point_msg);
     m_buf.unlock();
     /*
@@ -176,6 +179,7 @@ void pose_callback(const nav_msgs::Odometry::ConstPtr &pose_msg)
 {
     //ROS_INFO("pose_callback!");
     m_buf.lock();
+    while(pose_buf.size()>=MAX_BUFF_SIZE) pose_buf.pop();
     pose_buf.push(pose_msg);
     m_buf.unlock();
     /*
